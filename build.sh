@@ -69,7 +69,7 @@ cmake_build_install() {
 # Build and install all libraries
 ###############################################################################
 
-# =================> 1. Eigen <=================
+# # =================> 1. Eigen <=================
 $AX_CMAKE \
   -S "$AX_DEP_ROOT/eigen" \
   -B "$BUILD_DIR/eigen" \
@@ -82,7 +82,7 @@ $AX_CMAKE \
 cmake_build_install eigen
 echo "Eigen is installed."
 
-# =================> 2. entt <=================
+# # =================> 2. entt <=================
 $AX_CMAKE \
   -S "$AX_DEP_ROOT/entt" \
   -B "$BUILD_DIR/entt" \
@@ -92,3 +92,17 @@ $AX_CMAKE \
 
 cmake_build_install entt
 echo "EnTT is installed."
+
+# =================> 3. range-v3 <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/ranges-v3" \
+  -B "$BUILD_DIR/ranges-v3" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DRANGE_V3_DOCS=OFF \
+  -DRANGE_V3_EXAMPLES=OFF \
+  -DRANGE_V3_TESTS=OFF \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install ranges-v3
+echo "ranges-v3 is installed."
