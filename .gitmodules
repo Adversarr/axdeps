@@ -2,3 +2,6 @@
 	path = eigen
 	url = https://gitlab.com/libeigen/eigen.git
 	branch = 3.4
+[submodule "entt"]
+	path = entt
+	url = https://github.com/skypjack/entt.git
