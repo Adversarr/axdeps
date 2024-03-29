@@ -14,3 +14,27 @@
 [submodule "libigl"]
 	path = libigl
 	url = https://github.com/libigl/libigl.git
+[submodule "glfw"]
+	path = glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "glm"]
+	path = glm
+	url = https://github.com/g-truc/glm.git
+[submodule "imgui-node-editor"]
+	path = imgui-node-editor
+	url = https://github.com/thedmd/imgui-node-editor.git
+[submodule "imgui"]
+	path = imgui
+	url = https://github.com/ocornut/imgui.git
+[submodule "glad"]
+	path = glad
+	url = https://github.com/Dav1dde/glad.git
+[submodule "openvdb"]
+	path = openvdb
+	url = https://github.com/AcademySoftwareFoundation/openvdb.git
+[submodule "stb"]
+	path = stb
+	url = https://github.com/nothings/stb.git
+[submodule "implot"]
+	path = implot
+	url = https://github.com/epezent/implot.git
