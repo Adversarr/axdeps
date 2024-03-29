@@ -8,3 +8,6 @@
 [submodule "ranges-v3"]
 	path = ranges-v3
 	url = https://github.com/ericniebler/range-v3.git
+[submodule "doctest"]
+	path = doctest
+	url = https://github.com/doctest/doctest.git
