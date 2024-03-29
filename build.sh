@@ -77,18 +77,18 @@ cmake_build_install() {
 ###############################################################################
 
 # =================> 1. Eigen <=================
-NOTE: Will be installed via libigl.
-$AX_CMAKE \
-  -S "$AX_DEP_ROOT/eigen" \
-  -B "$BUILD_DIR/eigen" \
-  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
-  -DEIGEN_TEST_OPENMP=ON \
-  -DEIGEN_BUILD_DOC=OFF \
-  $AX_CMAKE_CONFIGURE_COMMAND
+# NOTE: Will be installed via libigl.
+# $AX_CMAKE \
+#   -S "$AX_DEP_ROOT/eigen" \
+#   -B "$BUILD_DIR/eigen" \
+#   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+#   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+#   -DEIGEN_TEST_OPENMP=ON \
+#   -DEIGEN_BUILD_DOC=OFF \
+#   $AX_CMAKE_CONFIGURE_COMMAND
 
-cmake_build_install eigen
-echo "Eigen is installed."
+# cmake_build_install eigen
+# echo "Eigen is installed."
 
 # =================> 2. entt <=================
 $AX_CMAKE \
@@ -255,18 +255,19 @@ if [ $RET -ne 0 ]; then
   exit 1
 fi
 
-# # =================> X2. glad <=================
+# =================> X2. glad <=================
 $AX_CMAKE \
   -S "$AX_DEP_ROOT/glad" \
   -B "$BUILD_DIR/glad" \
   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DGLAD_INSTALL=ON \
   $AX_CMAKE_CONFIGURE_COMMAND
 
 cmake_build_install glad
 echo "glad is installed."
 
-# # =================> X2.1 Boost <=================
+# =================> X2.1 Boost <=================
 $AX_CMAKE \
   -S "$AX_DEP_ROOT/boost" \
   -B "$BUILD_DIR/boost" \
@@ -276,7 +277,7 @@ $AX_CMAKE \
 
 cmake_build_install boost
 echo "boost is installed."
-# # =================> X2.2 Blosc <=================
+# =================> X2.2 Blosc <=================
 $AX_CMAKE \
   -S "$AX_DEP_ROOT/c-blosc" \
   -B "$BUILD_DIR/blosc" \
