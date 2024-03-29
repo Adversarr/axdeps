@@ -11,3 +11,6 @@
 [submodule "doctest"]
 	path = doctest
 	url = https://github.com/doctest/doctest.git
+[submodule "libigl"]
+	path = libigl
+	url = https://github.com/libigl/libigl.git

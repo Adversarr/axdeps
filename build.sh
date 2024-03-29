@@ -41,7 +41,7 @@ echo "Build Directory: $BUILD_DIR"
 
 cmake_build() {
   _LIB_NAME=$1
-  $AX_CMAKE --build "$BUILD_DIR/$_LIB_NAME" --config "$BUILD_TYPE"
+  $AX_CMAKE --build "$BUILD_DIR/$_LIB_NAME" --config "$BUILD_TYPE" -j10
   RET=$?
   if [ $RET -ne 0 ]; then
     echo "Failed to build $_LIB_NAME"
@@ -70,19 +70,20 @@ cmake_build_install() {
 ###############################################################################
 
 # # =================> 1. Eigen <=================
-$AX_CMAKE \
-  -S "$AX_DEP_ROOT/eigen" \
-  -B "$BUILD_DIR/eigen" \
-  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
-  -DEIGEN_TEST_OPENMP=ON \
-  -DEIGEN_BUILD_DOC=OFF \
-  $AX_CMAKE_CONFIGURE_COMMAND
+# NOTE: Will be installed via libigl.
+# $AX_CMAKE \
+#   -S "$AX_DEP_ROOT/eigen" \
+#   -B "$BUILD_DIR/eigen" \
+#   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+#   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+#   -DEIGEN_TEST_OPENMP=ON \
+#   -DEIGEN_BUILD_DOC=OFF \
+#   $AX_CMAKE_CONFIGURE_COMMAND
 
-cmake_build_install eigen
-echo "Eigen is installed."
+# cmake_build_install eigen
+# echo "Eigen is installed."
 
-# # =================> 2. entt <=================
+# # # =================> 2. entt <=================
 $AX_CMAKE \
   -S "$AX_DEP_ROOT/entt" \
   -B "$BUILD_DIR/entt" \
@@ -93,7 +94,7 @@ $AX_CMAKE \
 cmake_build_install entt
 echo "EnTT is installed."
 
-# =================> 3. range-v3 <=================
+# # =================> 3. range-v3 <=================
 $AX_CMAKE \
   -S "$AX_DEP_ROOT/ranges-v3" \
   -B "$BUILD_DIR/ranges-v3" \
@@ -106,3 +107,62 @@ $AX_CMAKE \
 
 cmake_build_install ranges-v3
 echo "ranges-v3 is installed."
+
+# # =================> 4. doctest <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/doctest" \
+  -B "$BUILD_DIR/doctest" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DDOCTEST_WITH_TESTS=OFF \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install doctest
+echo "doctest is installed."
+
+# =================> 5. benchmark <=================
+# not used, ignore.
+
+# =================> 6. libigl <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/libigl" \
+  -B "$BUILD_DIR/libigl" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DLIBIGL_BUILD_TESTS=OFF \
+  -DLIBIGL_BUILD_TUTORIALS=OFF \
+  -DLIBIGL_USE_STATIC_LIBRARY=ON \
+  -DLIBIGL_EMBREE=OFF \
+  -DLIBIGL_GLFW=OFF \
+  -DLIBIGL_IMGUI=OFF \
+  -DLIBIGL_OPENGL=OFF \
+  -DLIBIGL_STB=OFF \
+  -DLIBIGL_PREDICATES=OFF \
+  -DLIBIGL_SPECTRA=OFF \
+  -DLIBIGL_XML=OFF \
+  -DLIBIGL_COPYLEFT_CORE=ON \
+  -DLIBIGL_COPYLEFT_CGAL=OFF \
+  -DLIBIGL_COPYLEFT_COMISO=OFF \
+  -DLIBIGL_COPYLEFT_TETGEN=ON \
+  -DLIBIGL_RESTRICTED_MATLAB=OFF \
+  -DLIBIGL_RESTRICTED_MOSEK=OFF \
+  -DLIBIGL_RESTRICTED_TRIANGLE=OFF \
+  -DLIBIGL_GLFW_TESTS=OFF \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install libigl
+echo "libigl is installed."
+
+# =================> 7. glfw3 <=================
+
+
+# =================> 8. glm <=================
+# =================> 9. stb <=================
+# =================> X. imgui <=================
+# =================> X1. implot <=================
+# =================> X2. imgui-node-editor <=================
+# =================> X2. glad <=================
+# =================> X2. openvdb <=================
+# =================> X2. blosc <=================
+# =================> X2. zlib <=================
+# 
