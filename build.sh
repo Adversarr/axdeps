@@ -66,24 +66,31 @@ cmake_build_install() {
 }
 
 ###############################################################################
+# Some Libraries have special build instructions
+###############################################################################
+
+# Boost: is huge to build, and we don't need to build it if it is already installed.
+# Required by OpenVDB.
+
+###############################################################################
 # Build and install all libraries
 ###############################################################################
 
-# # =================> 1. Eigen <=================
-# NOTE: Will be installed via libigl.
-# $AX_CMAKE \
-#   -S "$AX_DEP_ROOT/eigen" \
-#   -B "$BUILD_DIR/eigen" \
-#   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-#   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
-#   -DEIGEN_TEST_OPENMP=ON \
-#   -DEIGEN_BUILD_DOC=OFF \
-#   $AX_CMAKE_CONFIGURE_COMMAND
+# =================> 1. Eigen <=================
+NOTE: Will be installed via libigl.
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/eigen" \
+  -B "$BUILD_DIR/eigen" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DEIGEN_TEST_OPENMP=ON \
+  -DEIGEN_BUILD_DOC=OFF \
+  $AX_CMAKE_CONFIGURE_COMMAND
 
-# cmake_build_install eigen
-# echo "Eigen is installed."
+cmake_build_install eigen
+echo "Eigen is installed."
 
-# # # =================> 2. entt <=================
+# =================> 2. entt <=================
 $AX_CMAKE \
   -S "$AX_DEP_ROOT/entt" \
   -B "$BUILD_DIR/entt" \
@@ -124,6 +131,7 @@ echo "doctest is installed."
 # not used, ignore.
 
 # =================> 6. libigl <=================
+# libigl static library is HUGE. We don't need it.
 $AX_CMAKE \
   -S "$AX_DEP_ROOT/libigl" \
   -B "$BUILD_DIR/libigl" \
@@ -131,7 +139,7 @@ $AX_CMAKE \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
   -DLIBIGL_BUILD_TESTS=OFF \
   -DLIBIGL_BUILD_TUTORIALS=OFF \
-  -DLIBIGL_USE_STATIC_LIBRARY=ON \
+  -DLIBIGL_USE_STATIC_LIBRARY=OFF \
   -DLIBIGL_EMBREE=OFF \
   -DLIBIGL_GLFW=OFF \
   -DLIBIGL_IMGUI=OFF \
@@ -154,15 +162,177 @@ cmake_build_install libigl
 echo "libigl is installed."
 
 # =================> 7. glfw3 <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/glfw" \
+  -B "$BUILD_DIR/glfw" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DBUILD_SHARED_LIBS=OFF \
+  -DGLFW_BUILD_DOCS=OFF \
+  -DGLFW_BUILD_EXAMPLES=OFF \
+  -DGLFW_BUILD_TESTS=OFF \
+  $AX_CMAKE_CONFIGURE_COMMAND
 
+cmake_build_install glfw
+echo "glfw is installed."
 
 # =================> 8. glm <=================
-# =================> 9. stb <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/glm" \
+  -B "$BUILD_DIR/glm" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DGLM_BUILD_LIBRARY=ON \
+  -DGLM_BUILD_TESTS=OFF  \
+  -DGLM_BUILD_INSTALL=ON \
+  -DGLM_ENABLE_CXX_17=ON \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install glm
+echo "glm is installed."
+
+# =================> 9. abseil <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/abseil" \
+  -B "$BUILD_DIR/abseil" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+  -DBUILD_TESTING=OFF \
+  -DABSL_BUILD_TESTING=OFF \
+  -DCMAKE_CXX_STANDARD=20 \
+  -DCMAKE_CXX_STANDARD_REQUIRED=ON \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install abseil
+echo "abseil is installed."
+
 # =================> X. imgui <=================
 # =================> X1. implot <=================
 # =================> X2. imgui-node-editor <=================
-# =================> X2. glad <=================
+mkdir -p imgui_src_build/imgui/include
+mkdir -p imgui_src_build/imgui/src
+# mkdir -p imgui_src_build/imnode/include
+# mkdir -p imgui_src_build/imnode/src
+mkdir -p imgui_src_build/implot/include
+mkdir -p imgui_src_build/implot/src
+
+cp imgui/*.h imgui_src_build/imgui/include
+cp imgui/*.cpp imgui_src_build/imgui/src
+cp imgui/backends/imgui_impl_glfw.cpp imgui_src_build/imgui/src
+cp imgui/backends/imgui_impl_opengl3.cpp imgui_src_build/imgui/src
+cp imgui/backends/imgui_impl_glfw.h imgui_src_build/imgui/include
+cp imgui/backends/imgui_impl_opengl3.h imgui_src_build/imgui/include
+cp imgui/backends/imgui_impl_opengl3_loader.h imgui_src_build/imgui/include
+
+# Currently not used
+# cp imgui-node-editor/*.cpp imgui_src_build/imnode/src
+# cp imgui-node-editor/*.inl imgui_src_build/imnode/include
+# cp imgui-node-editor/*.h imgui_src_build/imnode/include
+
+cp implot/*.h imgui_src_build/implot/include
+cp implot/*.cpp imgui_src_build/implot/src
+
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/imgui_src_build" \
+  -B "$BUILD_DIR/imgui_src_build" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DCMAKE_PREFIX_PATH="$INSTALL_PREFIX_WITHOUT_LIBNAME/lib/cmake" \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+$AX_CMAKE --build "$BUILD_DIR/imgui_src_build" --config "$BUILD_TYPE" -j10
+RET=$?
+if [ $RET -ne 0 ]; then
+  echo "Failed to build imgui"
+  exit 1
+fi
+
+$AX_CMAKE --install "$BUILD_DIR/imgui_src_build"
+RET=$?
+if [ $RET -ne 0 ]; then
+  echo "Failed to install imgui"
+  exit 1
+fi
+
+# # =================> X2. glad <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/glad" \
+  -B "$BUILD_DIR/glad" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install glad
+echo "glad is installed."
+
+# # =================> X2.1 Boost <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/boost" \
+  -B "$BUILD_DIR/boost" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install boost
+echo "boost is installed."
+# # =================> X2.2 Blosc <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/c-blosc" \
+  -B "$BUILD_DIR/blosc" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DTEST_INCLUDE_BENCH_SHUFFLE_1=OFF \
+  -DTEST_INCLUDE_BENCH_SHUFFLE_N=OFF \
+  -DTEST_INCLUDE_BENCH_BITSHUFFLE_1=OFF \
+  -DTEST_INCLUDE_BENCH_BITSHUFFLE_N=OFF \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install "blosc"
+echo "blosc is installed."
+
+# # =================> X2.3 zlib <=================
+
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/zlib" \
+  -B "$BUILD_DIR/zlib" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DMSVC_MP_THREAD_COUNT=10 \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+
+cmake_build_install zlib
+echo "zlib is installed."
+
+# # =================> X2.4 oneTBB <=================
+
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/oneTBB" \
+  -B "$BUILD_DIR/tbb" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DMSVC_MP_THREAD_COUNT=10 \
+  -DTBB_TEST=OFF \
+  $AX_CMAKE_CONFIGURE_COMMAND
+  
+
+cmake_build_install tbb
+echo "tbb is installed."
+
 # =================> X2. openvdb <=================
-# =================> X2. blosc <=================
-# =================> X2. zlib <=================
-# 
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/openvdb" \
+  -B "$BUILD_DIR/openvdb" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DOPENVDB_BUILD_CORE=ON \
+  -DOPENVDB_BUILD_BINARIES=ON \
+  -DUSE_NANOVDB=OFF \
+  -DBlosc_ROOT=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DZLIB_ROOT=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DTBB_ROOT=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install openvdb
+echo "openvdb is installed."
