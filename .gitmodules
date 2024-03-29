@@ -47,3 +47,9 @@
 [submodule "zlib"]
 	path = zlib
 	url = https://github.com/madler/zlib.git
+[submodule "oneTBB"]
+	path = oneTBB
+	url = https://github.com/oneapi-src/oneTBB.git
+[submodule "abseil"]
+	path = abseil
+	url = https://github.com/abseil/abseil-cpp.git

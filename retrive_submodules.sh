@@ -11,3 +11,7 @@ git submodule add https://github.com/epezent/implot.git
 git submodule add https://github.com/thedmd/imgui-node-editor.git
 git submodule add https://github.com/Dav1dde/glad.git
 git submodule add https://github.com/AcademySoftwareFoundation/openvdb.git
+git submodule add https://github.com/Blosc/c-blosc
+git submodule add https://github.com/madler/zlib.git
+git submodule add https://github.com/AcademySoftwareFoundation/openvdb.git
+git submodule add https://github.com/abseil/abseil-cpp.git abseil
