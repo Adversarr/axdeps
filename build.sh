@@ -70,7 +70,7 @@ cmake_build_install() {
 ###############################################################################
 
 # =================> 1. Eigen <=================
-cmake \
+$AX_CMAKE \
   -S "$AX_DEP_ROOT/eigen" \
   -B "$BUILD_DIR/eigen" \
   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
@@ -82,3 +82,13 @@ cmake \
 cmake_build_install eigen
 echo "Eigen is installed."
 
+# =================> 2. entt <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/entt" \
+  -B "$BUILD_DIR/entt" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install entt
+echo "EnTT is installed."
