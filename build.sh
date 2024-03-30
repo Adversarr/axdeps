@@ -30,12 +30,16 @@ if [ -z "$AX_DEP_ROOT" ]; then
 fi
 echo "Ax Dependency Root: $AX_DEP_ROOT"
 
-export SDK_PATH="$AX_DEP_ROOT/sdk"
+if [ -z "$SDK_PATH" ]; then
+  export SDK_PATH="$AX_DEP_ROOT/sdk"
+fi
+
 export INSTALL_PREFIX_WITHOUT_LIBNAME="$SDK_PATH/$BUILD_TYPE"
-export BINARY_DIR="$SDK/extra/bin"
+export BINARY_DIR="$SDK_PATH/bin"
 export BUILD_DIR="$AX_DEP_ROOT/build/$BUILD_TYPE"
 
-echo "Install Prefix: $INSTALL_PREFIX_WITHOUT_LIBNAME"s
+echo "SDK: $SDK_PATH"
+echo "Install Prefix: $INSTALL_PREFIX_WITHOUT_LIBNAME"
 echo "Binary Directory: $BINARY_DIR"
 echo "Build Directory: $BUILD_DIR"
 
