@@ -28,11 +28,16 @@ echo "Build Type: $BUILD_TYPE"
 if [ -z "$AX_DEP_ROOT" ]; then
   export AX_DEP_ROOT="$(dirname $0)"
 fi
+
 export AX_DEP_ROOT="$(realpath $AX_DEP_ROOT)"
 echo "Ax Dependency Root: $AX_DEP_ROOT"
 
 if [ -z "$SDK_PATH" ]; then
   export SDK_PATH="$AX_DEP_ROOT/sdk"
+fi
+if [ ! -d "$SDK_PATH" ]; then
+  echo "Creating SDK Path: $SDK_PATH"
+  mkdir -p $SDK_PATH
 fi
 
 export SDK_PATH="$(realpath $SDK_PATH)"
@@ -40,7 +45,7 @@ export INSTALL_PREFIX_WITHOUT_LIBNAME="$SDK_PATH/$BUILD_TYPE"
 export BINARY_DIR="$INSTALL_PREFIX_WITHOUT_LIBNAME/bin"
 export BUILD_DIR="$AX_DEP_ROOT/build/$BUILD_TYPE"
 
-echo "SDK: $SDK_PATH"
+echo "SDK PATH: $SDK_PATH"
 echo "Install Prefix: $INSTALL_PREFIX_WITHOUT_LIBNAME"
 echo "Binary Directory: $BINARY_DIR"
 echo "Build Directory: $BUILD_DIR"
@@ -226,28 +231,28 @@ echo "abseil is installed."
 # =================> X. imgui <=================
 # =================> X1. implot <=================
 # =================> X2. imgui-node-editor <=================
-mkdir -p imgui_src_build/imgui/include
-mkdir -p imgui_src_build/imgui/src
+mkdir -p $AX_DEP_ROOT/imgui_src_build/imgui/include
+mkdir -p $AX_DEP_ROOT/imgui_src_build/imgui/src
 # mkdir -p imgui_src_build/imnode/include
 # mkdir -p imgui_src_build/imnode/src
-mkdir -p imgui_src_build/implot/include
-mkdir -p imgui_src_build/implot/src
+mkdir -p $AX_DEP_ROOT/imgui_src_build/implot/include
+mkdir -p $AX_DEP_ROOT/imgui_src_build/implot/src
 
-cp imgui/*.h imgui_src_build/imgui/include
-cp imgui/*.cpp imgui_src_build/imgui/src
-cp imgui/backends/imgui_impl_glfw.cpp imgui_src_build/imgui/src
-cp imgui/backends/imgui_impl_opengl3.cpp imgui_src_build/imgui/src
-cp imgui/backends/imgui_impl_glfw.h imgui_src_build/imgui/include
-cp imgui/backends/imgui_impl_opengl3.h imgui_src_build/imgui/include
-cp imgui/backends/imgui_impl_opengl3_loader.h imgui_src_build/imgui/include
+cp $AX_DEP_ROOT/imgui/*.h $AX_DEP_ROOT/imgui_src_build/imgui/include
+cp $AX_DEP_ROOT/imgui/*.cpp $AX_DEP_ROOT/imgui_src_build/imgui/src
+cp $AX_DEP_ROOT/imgui/backends/imgui_impl_glfw.cpp $AX_DEP_ROOT/imgui_src_build/imgui/src
+cp $AX_DEP_ROOT/imgui/backends/imgui_impl_opengl3.cpp $AX_DEP_ROOT/imgui_src_build/imgui/src
+cp $AX_DEP_ROOT/imgui/backends/imgui_impl_glfw.h $AX_DEP_ROOT/imgui_src_build/imgui/include
+cp $AX_DEP_ROOT/imgui/backends/imgui_impl_opengl3.h $AX_DEP_ROOT/imgui_src_build/imgui/include
+cp $AX_DEP_ROOT/imgui/backends/imgui_impl_opengl3_loader.h $AX_DEP_ROOT/imgui_src_build/imgui/include
 
 # Currently not used
 # cp imgui-node-editor/*.cpp imgui_src_build/imnode/src
 # cp imgui-node-editor/*.inl imgui_src_build/imnode/include
 # cp imgui-node-editor/*.h imgui_src_build/imnode/include
 
-cp implot/*.h imgui_src_build/implot/include
-cp implot/*.cpp imgui_src_build/implot/src
+cp $AX_DEP_ROOT/implot/*.h $AX_DEP_ROOT/imgui_src_build/implot/include
+cp $AX_DEP_ROOT/implot/*.cpp $AX_DEP_ROOT/imgui_src_build/implot/src
 
 $AX_CMAKE \
   -S "$AX_DEP_ROOT/imgui_src_build" \
@@ -287,7 +292,6 @@ echo "glad is installed."
 $AX_CMAKE \
   -S "$AX_DEP_ROOT/boost" \
   -B "$BUILD_DIR/boost" \
-  -DBUILD_SHARED_LIBS=ON \
   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
   $AX_CMAKE_CONFIGURE_COMMAND
@@ -353,8 +357,11 @@ $AX_CMAKE \
   -DUSE_EXPLICIT_INSTANTIATION=OFF \
   -DUSE_NANOVDB=OFF \
   -DOPENVDB_BUILD_DOCS=OFF \
-  -DBLOSC_ROOT=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DBlosc_ROOT=$INSTALL_PREFIX_WITHOUT_LIBNAME \
   -DZLIB_ROOT=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DBoost_ROOT=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DTBB_ROOT=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DCMAKE_PREFIX_PATH="$INSTALL_PREFIX_WITHOUT_LIBNAME" \
   -DUSE_PKGCONFIG=OFF \
   -DTBB_ROOT=$INSTALL_PREFIX_WITHOUT_LIBNAME \
   -DMSVC_MP_THREAD_COUNT=10 \
