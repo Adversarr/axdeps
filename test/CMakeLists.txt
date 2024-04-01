@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 project(test_axdeps)
-set(CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../sdk/RelWithDebInfo/")
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../sdk/RelWithDebInfo/lib/cmake/OpenVDB")
+set(CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../axes3/sdk/RelWithDebInfo/")
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../axes3/sdk/RelWithDebInfo/lib/cmake/OpenVDB")
 set(CMAKE_BUILD_TYPE "RelWithDebInfo")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -24,5 +24,5 @@ find_package(glfw3 CONFIG REQUIRED)
 add_executable(test_main main.cpp)
 target_link_libraries(test_main PRIVATE 
   imgui::implot imgui::imgui_core
-  OpenGL::GL
+  OpenGL::GL glfw3
   glad::glad OpenVDB::openvdb)

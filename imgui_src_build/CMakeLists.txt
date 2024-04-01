@@ -16,15 +16,23 @@ target_include_directories(imgui_core PUBLIC
 )
 target_link_libraries(imgui_core PUBLIC glfw)
 
+
 # implot
 file(GLOB SRC "${CMAKE_CURRENT_SOURCE_DIR}/implot/src/*.cpp")
 file(GLOB PLOT_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/implot/include/*.h")
 add_library(implot STATIC ${SRC} ${HEADPLOT_HEADERSERS})
 target_include_directories(implot PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/implot/include>
-  $<INSTALL_INTERFACE:include/implot>  # <prefix>/include/implot
+$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/implot/include>
+$<INSTALL_INTERFACE:include/implot>  # <prefix>/include/implot
 )
 target_link_libraries(implot PUBLIC imgui_core)
+
+
+if (MSVC)
+  # /WHOLEARCHIVE
+  target_link_options(imgui_core PUBLIC "/WHOLEARCHIVE:imgui_core")
+  target_link_options(implot PUBLIC "/WHOLEARCHIVE:implot")
+endif()
 
 # Install this library
 include(CMakePackageConfigHelpers)

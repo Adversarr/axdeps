@@ -65,7 +65,7 @@ function cmake_build_install {
         exit 1
     }
 
-    & $env:AX_CMAKE --install "$($env:BUILD_DIR)/$LIB_NAME"
+    & $env:AX_CMAKE --install "$($env:BUILD_DIR)/$LIB_NAME" --config "$env:BUILD_TYPE"
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Failed to install $LIB_NAME"
         exit 1
@@ -73,12 +73,27 @@ function cmake_build_install {
 }
 
 # Translating the library-specific commands from the shell script
+# Eigen
+& $env:AX_CMAKE `
+  -S "$env:AX_DEP_ROOT/eigen" `
+  -B "$env:BUILD_DIR/eigen" `
+  "-DCMAKE_BUILD_TYPE=$env:BUILD_TYPE" `
+  "-DCMAKE_INSTALL_PREFIX=$env:INSTALL_PREFIX_WITHOUT_LIBNAME" `
+  -DCMAKE_CXX_STANDARD=17 `
+  -DEIGEN_BUILD_DOC=OFF `
+  -DEIGEN_BUILD_TESTING=OFF `
+  $env:AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install "eigen"
+Write-Host "Eigen3 is installed."
+Copy-Item "$env:INSTALL_PREFIX_WITHOUT_LIBNAME/share/eigen3/cmake" "$env:INSTALL_PREFIX_WITHOUT_LIBNAME/lib/cmake/eigen3" -Recurse -Force
+
 # EnTT
 & $env:AX_CMAKE `
   -S "$env:AX_DEP_ROOT/entt" `
   -B "$env:BUILD_DIR/entt" `
-  -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE `
-  -DCMAKE_INSTALL_PREFIX=$env:INSTALL_PREFIX_WITHOUT_LIBNAME `
+  "-DCMAKE_BUILD_TYPE=$env:BUILD_TYPE" `
+  "-DCMAKE_INSTALL_PREFIX=$env:INSTALL_PREFIX_WITHOUT_LIBNAME" `
   $env:AX_CMAKE_CONFIGURE_COMMAND
 
 cmake_build_install "entt"
@@ -88,8 +103,8 @@ Write-Host "EnTT is installed."
 & $env:AX_CMAKE `
   -S "$env:AX_DEP_ROOT/ranges-v3" `
   -B "$env:BUILD_DIR/ranges-v3" `
-  -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE `
-  -DCMAKE_INSTALL_PREFIX=$env:INSTALL_PREFIX_WITHOUT_LIBNAME `
+  -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" `
+  -DCMAKE_INSTALL_PREFIX="$env:INSTALL_PREFIX_WITHOUT_LIBNAME" `
   -DRANGE_V3_DOCS=OFF `
   -DRANGE_V3_EXAMPLES=OFF `
   -DRANGE_V3_TESTS=OFF `
@@ -102,8 +117,8 @@ Write-Host "ranges-v3 is installed."
 & $env:AX_CMAKE `
   -S "$env:AX_DEP_ROOT/doctest" `
   -B "$env:BUILD_DIR/doctest" `
-  -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE `
-  -DCMAKE_INSTALL_PREFIX=$env:INSTALL_PREFIX_WITHOUT_LIBNAME `
+  -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" `
+  -DCMAKE_INSTALL_PREFIX="$env:INSTALL_PREFIX_WITHOUT_LIBNAME" `
   -DDOCTEST_WITH_TESTS=OFF `
   $env:AX_CMAKE_CONFIGURE_COMMAND
 
@@ -112,30 +127,38 @@ Write-Host "doctest is installed."
 
 # libigl
 & $env:AX_CMAKE `
-  -S "$env:AX_DEP_ROOT/libigl" `
+  -S "$env:AX_DEP_ROOT" `
   -B "$env:BUILD_DIR/libigl" `
-  -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE `
-  -DCMAKE_INSTALL_PREFIX=$env:INSTALL_PREFIX_WITHOUT_LIBNAME `
-  -DLIBIGL_BUILD_TESTS=OFF `
-  -DLIBIGL_BUILD_TUTORIALS=OFF `
-  -DLIBIGL_USE_STATIC_LIBRARY=OFF `
-  -DLIBIGL_EMBREE=OFF `
-  -DLIBIGL_GLFW=OFF `
-  -DLIBIGL_IMGUI=OFF `
-  -DLIBIGL_OPENGL=OFF `
-  -DLIBIGL_STB=OFF `
-  -DLIBIGL_PREDICATES=OFF `
-  -DLIBIGL_SPECTRA=OFF `
-  -DLIBIGL_XML=OFF `
-  -DLIBIGL_COPYLEFT_CORE=ON `
-  -DLIBIGL_COPYLEFT_CGAL=OFF `
-  -DLIBIGL_COPYLEFT_COMISO=OFF `
-  -DLIBIGL_COPYLEFT_TETGEN=ON `
-  -DLIBIGL_RESTRICTED_MATLAB=OFF `
-  -DLIBIGL_RESTRICTED_MOSEK=OFF `
-  -DLIBIGL_RESTRICTED_TRIANGLE=OFF `
-  -DLIBIGL_GLFW_TESTS=OFF `
+  -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" `
+  -DCMAKE_INSTALL_PREFIX="$env:INSTALL_PREFIX_WITHOUT_LIBNAME" `
+  -DSDK_PATH="$env:SDK_PATH" `
   $env:AX_CMAKE_CONFIGURE_COMMAND
+
+  # -S "$env:AX_DEP_ROOT/libigl" `
+  # -B "$env:BUILD_DIR/libigl" `
+  # -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" `
+  # -DCMAKE_INSTALL_PREFIX="$env:INSTALL_PREFIX_WITHOUT_LIBNAME" `
+  # -DLIBIGL_INSTALL=ON `
+  # -DLIBIGL_BUILD_TESTS=OFF `
+  # -DLIBIGL_BUILD_TUTORIALS=OFF `
+  # -DLIBIGL_USE_STATIC_LIBRARY=OFF `
+  # -DLIBIGL_EMBREE=OFF `
+  # -DLIBIGL_GLFW=OFF `
+  # -DLIBIGL_IMGUI=OFF `
+  # -DLIBIGL_OPENGL=OFF `
+  # -DLIBIGL_STB=OFF `
+  # -DLIBIGL_PREDICATES=OFF `
+  # -DLIBIGL_SPECTRA=OFF `
+  # -DLIBIGL_XML=OFF `
+  # -DLIBIGL_COPYLEFT_CORE=ON `
+  # -DLIBIGL_COPYLEFT_CGAL=OFF `
+  # -DLIBIGL_COPYLEFT_COMISO=OFF `
+  # -DLIBIGL_COPYLEFT_TETGEN=ON `
+  # -DLIBIGL_RESTRICTED_MATLAB=OFF `
+  # -DLIBIGL_RESTRICTED_MOSEK=OFF `
+  # -DLIBIGL_RESTRICTED_TRIANGLE=OFF `
+  # -DLIBIGL_GLFW_TESTS=OFF `
+  # $env:AX_CMAKE_CONFIGURE_COMMAND
 
 cmake_build_install "libigl"
 Write-Host "libigl is installed."
@@ -144,8 +167,8 @@ Write-Host "libigl is installed."
 & $env:AX_CMAKE `
   -S "$env:AX_DEP_ROOT/glfw" `
   -B "$env:BUILD_DIR/glfw" `
-  -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE `
-  -DCMAKE_INSTALL_PREFIX=$env:INSTALL_PREFIX_WITHOUT_LIBNAME `
+  -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" `
+  -DCMAKE_INSTALL_PREFIX="$env:INSTALL_PREFIX_WITHOUT_LIBNAME" `
   -DBUILD_SHARED_LIBS=ON `
   -DGLFW_BUILD_DOCS=OFF `
   -DGLFW_BUILD_EXAMPLES=OFF `
@@ -159,9 +182,8 @@ Write-Host "glfw is installed."
 & $env:AX_CMAKE `
   -S "$env:AX_DEP_ROOT/glm" `
   -B "$env:BUILD_DIR/glm" `
-  -DBUILD_SHARED_LIBS=ON `
-  -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE `
-  -DCMAKE_INSTALL_PREFIX=$env:INSTALL_PREFIX_WITHOUT_LIBNAME `
+  -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" `
+  -DCMAKE_INSTALL_PREFIX="$env:INSTALL_PREFIX_WITHOUT_LIBNAME" `
   -DGLM_BUILD_LIBRARY=ON `
   -DGLM_BUILD_TESTS=OFF `
   -DGLM_BUILD_INSTALL=ON `
@@ -175,9 +197,9 @@ Write-Host "glm is installed."
 & $env:AX_CMAKE `
   -S "$env:AX_DEP_ROOT/abseil" `
   -B "$env:BUILD_DIR/abseil" `
-  -DBUILD_SHARED_LIBS=ON `
-  -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE `
-  -DCMAKE_INSTALL_PREFIX=$env:INSTALL_PREFIX_WITHOUT_LIBNAME `
+  -DBUILD_SHARED_LIBS=OFF `
+  -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" `
+  -DCMAKE_INSTALL_PREFIX="$env:INSTALL_PREFIX_WITHOUT_LIBNAME" `
   -DCMAKE_POSITION_INDEPENDENT_CODE=ON `
   -DBUILD_TESTING=OFF `
   -DABSL_BUILD_TESTING=OFF `
@@ -193,8 +215,11 @@ New-Item -ItemType Directory -Path "$env:AX_DEP_ROOT/imgui_src_build/imgui/inclu
 
 Copy-Item "$env:AX_DEP_ROOT/imgui/*.h" "$env:AX_DEP_ROOT/imgui_src_build/imgui/include"
 Copy-Item "$env:AX_DEP_ROOT/imgui/*.cpp" "$env:AX_DEP_ROOT/imgui_src_build/imgui/src"
-Copy-Item "$env:AX_DEP_ROOT/imgui/backends/imgui_impl_glfw.*" "$env:AX_DEP_ROOT/imgui_src_build/imgui/include"
-Copy-Item "$env:AX_DEP_ROOT/imgui/backends/imgui_impl_opengl3.*" "$env:AX_DEP_ROOT/imgui_src_build/imgui/include"
+Copy-Item "$env:AX_DEP_ROOT/imgui/backends/imgui_impl_glfw.h" "$env:AX_DEP_ROOT/imgui_src_build/imgui/include"
+Copy-Item "$env:AX_DEP_ROOT/imgui/backends/imgui_impl_glfw.cpp" "$env:AX_DEP_ROOT/imgui_src_build/imgui/src"
+Copy-Item "$env:AX_DEP_ROOT/imgui/backends/imgui_impl_opengl3.h" "$env:AX_DEP_ROOT/imgui_src_build/imgui/include"
+Copy-Item "$env:AX_DEP_ROOT/imgui/backends/imgui_impl_opengl3_loader.h" "$env:AX_DEP_ROOT/imgui_src_build/imgui/include"
+Copy-Item "$env:AX_DEP_ROOT/imgui/backends/imgui_impl_opengl3.cpp" "$env:AX_DEP_ROOT/imgui_src_build/imgui/src"
 
 Copy-Item "$env:AX_DEP_ROOT/implot/*.h" "$env:AX_DEP_ROOT/imgui_src_build/implot/include"
 Copy-Item "$env:AX_DEP_ROOT/implot/*.cpp" "$env:AX_DEP_ROOT/imgui_src_build/implot/src"
@@ -202,8 +227,8 @@ Copy-Item "$env:AX_DEP_ROOT/implot/*.cpp" "$env:AX_DEP_ROOT/imgui_src_build/impl
 & $env:AX_CMAKE `
   -S "$env:AX_DEP_ROOT/imgui_src_build" `
   -B "$env:BUILD_DIR/imgui_src_build" `
-  -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE `
-  -DCMAKE_INSTALL_PREFIX=$env:INSTALL_PREFIX_WITHOUT_LIBNAME `
+  -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" `
+  -DCMAKE_INSTALL_PREFIX="$env:INSTALL_PREFIX_WITHOUT_LIBNAME" `
   -DCMAKE_PREFIX_PATH="$env:INSTALL_PREFIX_WITHOUT_LIBNAME/lib/cmake" `
   $env:AX_CMAKE_CONFIGURE_COMMAND
 
@@ -213,7 +238,7 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-& $env:AX_CMAKE --install "$env:BUILD_DIR/imgui_src_build"
+& $env:AX_CMAKE --install "$env:BUILD_DIR/imgui_src_build" --config $env:BUILD_TYPE
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Failed to install imgui"
     exit 1
@@ -225,8 +250,8 @@ Write-Host "imgui and related components are installed."
 & $env:AX_CMAKE `
   -S "$env:AX_DEP_ROOT/glad" `
   -B "$env:BUILD_DIR/glad" `
-  -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE `
-  -DCMAKE_INSTALL_PREFIX=$env:INSTALL_PREFIX_WITHOUT_LIBNAME `
+  -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" `
+  -DCMAKE_INSTALL_PREFIX="$env:INSTALL_PREFIX_WITHOUT_LIBNAME" `
   -DGLAD_INSTALL=ON `
   $env:AX_CMAKE_CONFIGURE_COMMAND
 
@@ -234,22 +259,36 @@ cmake_build_install "glad"
 Write-Host "glad is installed."
 
 # Boost (Note: The actual Boost build might require additional handling if Boost.Build is used instead of CMake)
-& $env:AX_CMAKE `
-  -S "$env:AX_DEP_ROOT/boost" `
-  -B "$env:BUILD_DIR/boost" `
-  -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE `
-  -DCMAKE_INSTALL_PREFIX=$env:INSTALL_PREFIX_WITHOUT_LIBNAME `
-  $env:AX_CMAKE_CONFIGURE_COMMAND
+# & $env:AX_CMAKE `
+#   -S "$env:AX_DEP_ROOT/boost" `
+#   -B "$env:BUILD_DIR/boost" `
+#   -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" `
+#   -DCMAKE_INSTALL_PREFIX="$env:INSTALL_PREFIX_WITHOUT_LIBNAME" `
+#   $env:AX_CMAKE_CONFIGURE_COMMAND
 
-cmake_build_install "boost"
+# cmake_build_install "boost"
+Set-Location $env:AX_DEP_ROOT\boost
+./bootstrap
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Failed to bootstrap Boost"
+    exit 1
+}
+./b2.exe --prefix="$env:INSTALL_PREFIX_WITHOUT_LIBNAME" install
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Failed to install Boost"
+    exit 1
+}
+Set-Location $env:AX_DEP_ROOT
+
+
 Write-Host "Boost is installed."
 
 # Blosc
 & $env:AX_CMAKE `
   -S "$env:AX_DEP_ROOT/c-blosc" `
   -B "$env:BUILD_DIR/blosc" `
-  -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE `
-  -DCMAKE_INSTALL_PREFIX=$env:INSTALL_PREFIX_WITHOUT_LIBNAME `
+  -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" `
+  -DCMAKE_INSTALL_PREFIX="$env:INSTALL_PREFIX_WITHOUT_LIBNAME" `
   -DBUILD_SHARED_LIBS=ON `
   -DTEST_INCLUDE_BENCH_SHUFFLE_1=OFF `
   -DTEST_INCLUDE_BENCH_SHUFFLE_N=OFF `
@@ -265,8 +304,8 @@ Write-Host "blosc is installed."
   -S "$env:AX_DEP_ROOT/zlib" `
   -B "$env:BUILD_DIR/zlib" `
   -DBUILD_SHARED_LIBS=ON `
-  -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE `
-  -DCMAKE_INSTALL_PREFIX=$env:INSTALL_PREFIX_WITHOUT_LIBNAME `
+  -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" `
+  -DCMAKE_INSTALL_PREFIX="$env:INSTALL_PREFIX_WITHOUT_LIBNAME" `
   -DMSVC_MP_THREAD_COUNT=10 `
   $env:AX_CMAKE_CONFIGURE_COMMAND
 
@@ -278,8 +317,8 @@ Write-Host "zlib is installed."
   -S "$env:AX_DEP_ROOT/oneTBB" `
   -B "$env:BUILD_DIR/tbb" `
   -DBUILD_SHARED_LIBS=ON `
-  -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE `
-  -DCMAKE_INSTALL_PREFIX=$env:INSTALL_PREFIX_WITHOUT_LIBNAME `
+  -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" `
+  -DCMAKE_INSTALL_PREFIX="$env:INSTALL_PREFIX_WITHOUT_LIBNAME" `
   -DMSVC_MP_THREAD_COUNT=10 `
   -DTBB_TEST=OFF `
   $env:AX_CMAKE_CONFIGURE_COMMAND
@@ -291,11 +330,10 @@ Write-Host "tbb is installed."
 & $env:AX_CMAKE `
   -S "$env:AX_DEP_ROOT/openvdb" `
   -B "$env:BUILD_DIR/openvdb" `
-  -DCMAKE_BUILD_TYPE=$env:BUILD_TYPE `
-  -DCMAKE_INSTALL_PREFIX=$env:INSTALL_PREFIX_WITHOUT_LIBNAME `
+  -DCMAKE_BUILD_TYPE="$env:BUILD_TYPE" `
+  -DCMAKE_INSTALL_PREFIX="$env:INSTALL_PREFIX_WITHOUT_LIBNAME" `
   -DBUILD_SHARED_LIBS=ON `
   -DOPENVDB_BUILD_CORE=ON `
-  -DOPENVDB_BUILD_BINARIES=ON `
   -DUSE_EXPLICIT_INSTANTIATION=OFF `
   -DUSE_NANOVDB=OFF `
   -DOPENVDB_BUILD_DOCS=OFF `
@@ -305,7 +343,6 @@ Write-Host "tbb is installed."
   -DTBB_ROOT=$env:INSTALL_PREFIX_WITHOUT_LIBNAME `
   -DCMAKE_PREFIX_PATH="$env:INSTALL_PREFIX_WITHOUT_LIBNAME" `
   -DUSE_PKGCONFIG=OFF `
-  -DTBB_ROOT=$env:INSTALL_PREFIX_WITHOUT_LIBNAME `
   -DMSVC_MP_THREAD_COUNT=10 `
   -DOPENVDB_BUILD_NANOVDB=OFF `
   -DOPENVDB_BUILD_UNITTESTS=OFF `
