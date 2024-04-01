@@ -97,17 +97,18 @@ cmake_build_install() {
 
 # =================> 1. Eigen <=================
 # NOTE: Will be installed via libigl.
-# $AX_CMAKE \
-#   -S "$AX_DEP_ROOT/eigen" \
-#   -B "$BUILD_DIR/eigen" \
-#   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-#   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
-#   -DEIGEN_TEST_OPENMP=ON \
-#   -DEIGEN_BUILD_DOC=OFF \
-#   $AX_CMAKE_CONFIGURE_COMMAND
+$AX_CMAKE \
+ -S "$AX_DEP_ROOT/eigen" \
+ -B "$BUILD_DIR/eigen" \
+ -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+ -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+ -DEIGEN_TEST_OPENMP=ON \
+ -DEIGEN_BUILD_DOC=OFF \
+ -DEIGEN_BUILD_TESTING=OFF \
+ $AX_CMAKE_CONFIGURE_COMMAND
 
-# cmake_build_install eigen
-# echo "Eigen is installed."
+cmake_build_install eigen
+echo "Eigen is installed."
 
 # =================> 2. entt <=================
 $AX_CMAKE \
@@ -152,30 +153,31 @@ echo "doctest is installed."
 # =================> 6. libigl <=================
 # libigl static library is HUGE. We don't need it.
 $AX_CMAKE \
-  -S "$AX_DEP_ROOT/libigl" \
+  -S "$AX_DEP_ROOT" \
   -B "$BUILD_DIR/libigl" \
   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DSDK_PATH=$INSTALL_PREFIX_WITHOUT_LIBNAME \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
-  -DLIBIGL_BUILD_TESTS=OFF \
-  -DLIBIGL_BUILD_TUTORIALS=OFF \
-  -DLIBIGL_USE_STATIC_LIBRARY=OFF \
-  -DLIBIGL_EMBREE=OFF \
-  -DLIBIGL_GLFW=OFF \
-  -DLIBIGL_IMGUI=OFF \
-  -DLIBIGL_OPENGL=OFF \
-  -DLIBIGL_STB=OFF \
-  -DLIBIGL_PREDICATES=OFF \
-  -DLIBIGL_SPECTRA=OFF \
-  -DLIBIGL_XML=OFF \
-  -DLIBIGL_COPYLEFT_CORE=ON \
-  -DLIBIGL_COPYLEFT_CGAL=OFF \
-  -DLIBIGL_COPYLEFT_COMISO=OFF \
-  -DLIBIGL_COPYLEFT_TETGEN=ON \
-  -DLIBIGL_RESTRICTED_MATLAB=OFF \
-  -DLIBIGL_RESTRICTED_MOSEK=OFF \
-  -DLIBIGL_RESTRICTED_TRIANGLE=OFF \
-  -DLIBIGL_GLFW_TESTS=OFF \
   $AX_CMAKE_CONFIGURE_COMMAND
+  # -DLIBIGL_BUILD_TESTS=OFF \
+  # -DLIBIGL_BUILD_TUTORIALS=OFF \
+  # -DLIBIGL_USE_STATIC_LIBRARY=OFF \
+  # -DLIBIGL_EMBREE=OFF \
+  # -DLIBIGL_GLFW=OFF \
+  # -DLIBIGL_IMGUI=OFF \
+  # -DLIBIGL_OPENGL=OFF \
+  # -DLIBIGL_STB=OFF \
+  # -DLIBIGL_PREDICATES=OFF \
+  # -DLIBIGL_SPECTRA=OFF \
+  # -DLIBIGL_XML=OFF \
+  # -DLIBIGL_COPYLEFT_CORE=ON \
+  # -DLIBIGL_COPYLEFT_CGAL=OFF \
+  # -DLIBIGL_COPYLEFT_COMISO=OFF \
+  # -DLIBIGL_COPYLEFT_TETGEN=ON \
+  # -DLIBIGL_RESTRICTED_MATLAB=OFF \
+  # -DLIBIGL_RESTRICTED_MOSEK=OFF \
+  # -DLIBIGL_RESTRICTED_TRIANGLE=OFF \
+  # -DLIBIGL_GLFW_TESTS=OFF \
 
 cmake_build_install libigl
 echo "libigl is installed."
@@ -289,14 +291,28 @@ cmake_build_install glad
 echo "glad is installed."
 
 # =================> X2.1 Boost <=================
-$AX_CMAKE \
-  -S "$AX_DEP_ROOT/boost" \
-  -B "$BUILD_DIR/boost" \
-  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
-  $AX_CMAKE_CONFIGURE_COMMAND
+# $AX_CMAKE \
+#   -S "$AX_DEP_ROOT/boost" \
+#   -B "$BUILD_DIR/boost" \
+#   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+#   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+#   $AX_CMAKE_CONFIGURE_COMMAND
+#
+# cmake_build_install boost
 
-cmake_build_install boost
+cd $AX_DEP_ROOT/boost
+./bootstrap.sh
+if [ $? -ne 0 ]; then
+  echo "Failed to bootstrap boost."
+  exit 1
+fi
+
+./b2 install --prefix=$INSTALL_PREFIX_WITHOUT_LIBNAME
+if [ $? -ne 0 ]; then
+  echo "Failed to install boost."
+  exit 1
+fi
+
 echo "boost is installed."
 # =================> X2.2 Blosc <=================
 $AX_CMAKE \
