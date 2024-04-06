@@ -235,8 +235,8 @@ echo "abseil is installed."
 # =================> X2. imgui-node-editor <=================
 mkdir -p $AX_DEP_ROOT/imgui_src_build/imgui/include
 mkdir -p $AX_DEP_ROOT/imgui_src_build/imgui/src
-# mkdir -p imgui_src_build/imnode/include
-# mkdir -p imgui_src_build/imnode/src
+mkdir -p imgui_src_build/imnode/include
+mkdir -p imgui_src_build/imnode/src
 mkdir -p $AX_DEP_ROOT/imgui_src_build/implot/include
 mkdir -p $AX_DEP_ROOT/imgui_src_build/implot/src
 
@@ -249,9 +249,15 @@ cp $AX_DEP_ROOT/imgui/backends/imgui_impl_opengl3.h $AX_DEP_ROOT/imgui_src_build
 cp $AX_DEP_ROOT/imgui/backends/imgui_impl_opengl3_loader.h $AX_DEP_ROOT/imgui_src_build/imgui/include
 
 # Currently not used
-# cp imgui-node-editor/*.cpp imgui_src_build/imnode/src
-# cp imgui-node-editor/*.inl imgui_src_build/imnode/include
-# cp imgui-node-editor/*.h imgui_src_build/imnode/include
+cp $AX_DEP_ROOT/imgui-node-editor/*.cpp $AX_DEP_ROOT/imgui_src_build/imnode/src
+cp $AX_DEP_ROOT/imgui-node-editor/*.inl $AX_DEP_ROOT/imgui_src_build/imnode/include
+cp $AX_DEP_ROOT/imgui-node-editor/*.h $AX_DEP_ROOT/imgui_src_build/imnode/include
+# apply the patch
+# diff -u imgui-node-editor/imgui_extra_math.h imgui_src_build/imnode/include/imgui_extra_math.h > imgui_extra_math.h.patch
+# diff -u imgui-node-editor/imgui_extra_math.inl imgui_src_build/imnode/include/imgui_extra_math.inl > imgui_extra_math.inl.patch
+patch $AX_DEP_ROOT/imgui_src_build/imnode/include/imgui_extra_math.h < $AX_DEP_ROOT/imgui_extra_math.h.patch
+patch $AX_DEP_ROOT/imgui_src_build/imnode/include/imgui_extra_math.inl < $AX_DEP_ROOT/imgui_extra_math.inl.patch
+
 
 cp $AX_DEP_ROOT/implot/*.h $AX_DEP_ROOT/imgui_src_build/implot/include
 cp $AX_DEP_ROOT/implot/*.cpp $AX_DEP_ROOT/imgui_src_build/implot/src

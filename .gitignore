@@ -2,4 +2,5 @@ build
 sdk
 imgui_src_build/imgui
 imgui_src_build/implot
+imgui_src_build/imnode
 .DS_Store

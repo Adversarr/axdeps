@@ -1,0 +1,19 @@
+--- imgui-node-editor/imgui_extra_math.inl	2024-03-30 13:42:07
++++ imgui_src_build/imnode/include/imgui_extra_math.inl	2024-04-06 19:22:03
+@@ -19,6 +19,7 @@
+ 
+ 
+ //------------------------------------------------------------------------------
++#if IMGUI_VERSION_NUM < 19002
+ inline bool operator==(const ImVec2& lhs, const ImVec2& rhs)
+ {
+     return lhs.x == rhs.x && lhs.y == rhs.y;
+@@ -28,7 +29,7 @@
+ {
+     return lhs.x != rhs.x || lhs.y != rhs.y;
+ }
+-
++#endif
+ inline ImVec2 operator*(const float lhs, const ImVec2& rhs)
+ {
+     return ImVec2(lhs * rhs.x, lhs * rhs.y);

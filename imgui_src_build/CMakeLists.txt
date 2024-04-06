@@ -27,6 +27,15 @@ $<INSTALL_INTERFACE:include/implot>  # <prefix>/include/implot
 )
 target_link_libraries(implot PUBLIC imgui_core)
 
+# imgui-node-editor
+file(GLOB SRC "${CMAKE_CURRENT_SOURCE_DIR}/imnode/src/*.cpp")
+file(GLOB NODE_EDITOR_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/imnode/include/*.h")
+add_library(imnode STATIC ${SRC})
+target_include_directories(imnode PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/imnode/include>
+        $<INSTALL_INTERFACE:include/imnode>  # <prefix>/include/imnode
+)
+target_link_libraries(imnode PUBLIC imgui_core)
 
 if (MSVC)
   # /WHOLEARCHIVE
@@ -43,7 +52,7 @@ write_basic_package_version_file(
     VERSION ${PACKAGE_VERSION}
     COMPATIBILITY AnyNewerVersion)
 
-install(TARGETS imgui_core implot
+install(TARGETS imgui_core implot imnode
         EXPORT imguiTargets
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
