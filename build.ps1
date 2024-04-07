@@ -211,7 +211,7 @@ cmake_build_install "abseil"
 Write-Host "abseil is installed."
 
 # imgui, implot, and additional steps for setting up directories
-New-Item -ItemType Directory -Path "$env:AX_DEP_ROOT/imgui_src_build/imgui/include", "$env:AX_DEP_ROOT/imgui_src_build/imgui/src", "$env:AX_DEP_ROOT/imgui_src_build/implot/include", "$env:AX_DEP_ROOT/imgui_src_build/implot/src" -Force
+New-Item -ItemType Directory -Path "$env:AX_DEP_ROOT/imgui_src_build/imgui/include", "$env:AX_DEP_ROOT/imgui_src_build/imgui/src", "$env:AX_DEP_ROOT/imgui_src_build/implot/include", "$env:AX_DEP_ROOT/imgui_src_build/implot/src", "$env:AX_DEP_ROOT/imgui_src_build/imnode/include", "$env:AX_DEP_ROOT/imgui_src_build/imnode/src" -Force
 
 Copy-Item "$env:AX_DEP_ROOT/imgui/*.h" "$env:AX_DEP_ROOT/imgui_src_build/imgui/include"
 Copy-Item "$env:AX_DEP_ROOT/imgui/*.cpp" "$env:AX_DEP_ROOT/imgui_src_build/imgui/src"
@@ -221,8 +221,12 @@ Copy-Item "$env:AX_DEP_ROOT/imgui/backends/imgui_impl_opengl3.h" "$env:AX_DEP_RO
 Copy-Item "$env:AX_DEP_ROOT/imgui/backends/imgui_impl_opengl3_loader.h" "$env:AX_DEP_ROOT/imgui_src_build/imgui/include"
 Copy-Item "$env:AX_DEP_ROOT/imgui/backends/imgui_impl_opengl3.cpp" "$env:AX_DEP_ROOT/imgui_src_build/imgui/src"
 
-Copy-Item "$env:AX_DEP_ROOT/implot/*.h" "$env:AX_DEP_ROOT/imgui_src_build/implot/include"
-Copy-Item "$env:AX_DEP_ROOT/implot/*.cpp" "$env:AX_DEP_ROOT/imgui_src_build/implot/src"
+Copy-Item "$env:AX_DEP_ROOT/imgui-node-editor/*.h" "$env:AX_DEP_ROOT/imgui_src_build/imnode/include"
+Copy-Item "$env:AX_DEP_ROOT/imgui-node-editor/*.inl" "$env:AX_DEP_ROOT/imgui_src_build/imnode/include"
+Copy-Item "$env:AX_DEP_ROOT/imgui-node-editor/*.cpp" "$env:AX_DEP_ROOT/imgui_src_build/imnode/src"
+patch "$env:AX_DEP_ROOT/imgui_src_build/imnode/include/imgui_extra_math.h" "$env:AX_DEP_ROOT/imgui_extra_math.h.patch"
+patch "$env:AX_DEP_ROOT/imgui_src_build/imnode/include/imgui_extra_math.inl" "$env:AX_DEP_ROOT/imgui_extra_math.inl.patch"
+
 
 & $env:AX_CMAKE `
   -S "$env:AX_DEP_ROOT/imgui_src_build" `
