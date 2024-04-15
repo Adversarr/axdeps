@@ -235,8 +235,8 @@ echo "abseil is installed."
 # =================> X2. imgui-node-editor <=================
 mkdir -p $AX_DEP_ROOT/imgui_src_build/imgui/include
 mkdir -p $AX_DEP_ROOT/imgui_src_build/imgui/src
-mkdir -p imgui_src_build/imnode/include
-mkdir -p imgui_src_build/imnode/src
+mkdir -p $AX_DEP_ROOT/imgui_src_build/imnode/include
+mkdir -p $AX_DEP_ROOT/imgui_src_build/imnode/src
 mkdir -p $AX_DEP_ROOT/imgui_src_build/implot/include
 mkdir -p $AX_DEP_ROOT/imgui_src_build/implot/src
 
@@ -255,8 +255,9 @@ cp $AX_DEP_ROOT/imgui-node-editor/*.h $AX_DEP_ROOT/imgui_src_build/imnode/includ
 # apply the patch
 # diff -u imgui-node-editor/imgui_extra_math.h imgui_src_build/imnode/include/imgui_extra_math.h > imgui_extra_math.h.patch
 # diff -u imgui-node-editor/imgui_extra_math.inl imgui_src_build/imnode/include/imgui_extra_math.inl > imgui_extra_math.inl.patch
-patch $AX_DEP_ROOT/imgui_src_build/imnode/include/imgui_extra_math.h < $AX_DEP_ROOT/imgui_extra_math.h.patch
-patch $AX_DEP_ROOT/imgui_src_build/imnode/include/imgui_extra_math.inl < $AX_DEP_ROOT/imgui_extra_math.inl.patch
+# patch $AX_DEP_ROOT/imgui_src_build/imnode/include/imgui_extra_math.h < $AX_DEP_ROOT/imgui_extra_math.h.patch
+# patch $AX_DEP_ROOT/imgui_src_build/imnode/include/imgui_extra_math.inl < $AX_DEP_ROOT/imgui_extra_math.inl.patch
+patch $AX_DEP_ROOT/imgui_src_build/imnode/src/imgui_canvas.cpp < $AX_DEP_ROOT/imgui_canvas.patch
 
 
 cp $AX_DEP_ROOT/implot/*.h $AX_DEP_ROOT/imgui_src_build/implot/include

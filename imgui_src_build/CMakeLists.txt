@@ -12,7 +12,7 @@ find_package(glfw3 CONFIG REQUIRED)
 
 target_include_directories(imgui_core PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/imgui/include>
-  $<INSTALL_INTERFACE:include/imgui>  # <prefix>/include/imgui
+  $<INSTALL_INTERFACE:include/>  # <prefix>/include/imgui
 )
 target_link_libraries(imgui_core PUBLIC glfw)
 
@@ -23,7 +23,7 @@ file(GLOB PLOT_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/implot/include/*.h")
 add_library(implot STATIC ${SRC} ${HEADPLOT_HEADERSERS})
 target_include_directories(implot PUBLIC
 $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/implot/include>
-$<INSTALL_INTERFACE:include/implot>  # <prefix>/include/implot
+$<INSTALL_INTERFACE:include/>  # <prefix>/include/implot
 )
 target_link_libraries(implot PUBLIC imgui_core)
 
@@ -33,15 +33,9 @@ file(GLOB NODE_EDITOR_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/imnode/include/*.h")
 add_library(imnode STATIC ${SRC})
 target_include_directories(imnode PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/imnode/include>
-        $<INSTALL_INTERFACE:include/imnode>  # <prefix>/include/imnode
+        $<INSTALL_INTERFACE:include/>  # <prefix>/include/imnode
 )
 target_link_libraries(imnode PUBLIC imgui_core)
-
-if (MSVC)
-  # /WHOLEARCHIVE
-  target_link_options(imgui_core PUBLIC "/WHOLEARCHIVE:imgui_core")
-  target_link_options(implot PUBLIC "/WHOLEARCHIVE:implot")
-endif()
 
 # Install this library
 include(CMakePackageConfigHelpers)
@@ -70,6 +64,6 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/imguiConfig.cmake"
               "${CMAKE_CURRENT_BINARY_DIR}/imguiConfigVersion.cmake"
         DESTINATION lib/cmake/imgui)
 
-install(FILES ${CORE_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/imgui)
-install(FILES ${PLOT_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/implot)
-install(FILES ${NODE_EDITOR_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/imnode)
+install(FILES ${CORE_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${PLOT_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${NODE_EDITOR_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
