@@ -394,3 +394,45 @@ $AX_CMAKE \
 
 cmake_build_install openvdb
 echo "openvdb is installed."
+
+# =================> X3.1. OpenBLAS <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/OpenBLAS" \
+  -B "$BUILD_DIR/OpenBLAS" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DBUILD_SHARED_LIBS=ON \
+  -DBUILD_TESTING=OFF \
+  -DUSE_OPENMP=ON \
+  $AX_CMAKE_CONFIGURE_COMMAND
+cmake_build_install OpenBLAS
+echo "OpenBLAS is installed."
+
+# =================> X3. SuiteSparse <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/SuiteSparse" \
+  -B "$BUILD_DIR/SuiteSparse" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DBUILD_SHARED_LIBS=ON \
+  -DBUILD_STATIC_LIBS=ON \
+  -DBLAS_LIBRARIES="$INSTALL_PREFIX_WITHOUT_LIBNAME/lib/" \
+  -DBLA_VENDOR="OpenBLAS" \
+  -DSUITESPARSE_ENABLE_PROJECTS="cholmod;cxsparse" \
+  -DSUITESPARSE_USE_64BIT_BLAS=ON \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install SuiteSparse
+echo "SuiteSparse is installed."
+
+# =================> X4. AMGCL <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/amgcl" \
+  -B "$BUILD_DIR/amgcl" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DBUILD_SHARED_LIBS=ON \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install amgcl
+echo "AMGCL is installed."
