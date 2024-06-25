@@ -53,3 +53,12 @@
 [submodule "abseil"]
 	path = abseil
 	url = https://github.com/abseil/abseil-cpp.git
+[submodule "SuiteSparse"]
+	path = SuiteSparse
+	url = https://github.com/DrTimothyAldenDavis/SuiteSparse.git
+[submodule "hypre"]
+	path = hypre
+	url = https://github.com/hypre-space/hypre.git
+[submodule "amgcl"]
+	path = amgcl
+	url = https://github.com/ddemidov/amgcl.git
