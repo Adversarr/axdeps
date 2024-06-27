@@ -59,6 +59,3 @@
 [submodule "amgcl"]
 	path = amgcl
 	url = https://github.com/ddemidov/amgcl.git
-[submodule "OpenBLAS"]
-	path = OpenBLAS
-	url = https://github.com/OpenMathLib/OpenBLAS.git
