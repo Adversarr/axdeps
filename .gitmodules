@@ -59,6 +59,3 @@
 [submodule "amgcl"]
 	path = amgcl
 	url = https://github.com/ddemidov/amgcl.git
-[submodule "taskflow"]
-	path = taskflow
-	url = https://github.com/taskflow/taskflow.git
