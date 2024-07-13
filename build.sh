@@ -164,6 +164,7 @@ $AX_CMAKE \
   -DLIBIGL_EMBREE=OFF \
   -DLIBIGL_GLFW=OFF \
   -DLIBIGL_IMGUI=OFF \
+  -DLIBIGL_INSTALL=ON \
   -DLIBIGL_OPENGL=OFF \
   -DLIBIGL_STB=OFF \
   -DLIBIGL_PREDICATES=OFF \
@@ -300,15 +301,6 @@ cmake_build_install glad
 echo "glad is installed."
 
 # =================> X2.1 Boost <=================
-# $AX_CMAKE \
-#   -S "$AX_DEP_ROOT/boost" \
-#   -B "$BUILD_DIR/boost" \
-#   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-#   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
-#   $AX_CMAKE_CONFIGURE_COMMAND
-#
-# cmake_build_install boost
-
 cd $AX_DEP_ROOT/boost
 ./bootstrap.sh
 if [ $? -ne 0 ]; then
@@ -350,7 +342,7 @@ $AX_CMAKE \
   $AX_CMAKE_CONFIGURE_COMMAND
 
 
-# cmake_build_install zlib
+cmake_build_install zlib
 echo "zlib is installed."
 
 # # =================> X2.4 oneTBB <=================
@@ -395,7 +387,7 @@ $AX_CMAKE \
 cmake_build_install openvdb
 echo "openvdb is installed."
 
-# =================> X3. SuiteSparse <=================
+# =================> u3. SuiteSparse <=================
 $AX_CMAKE \
   -S "$AX_DEP_ROOT/SuiteSparse" \
   -B "$BUILD_DIR/SuiteSparse" \
@@ -403,6 +395,7 @@ $AX_CMAKE \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
   -DBUILD_SHARED_LIBS=ON \
   -DBUILD_STATIC_LIBS=ON \
+  -DSUITESPARSE_USE_STRICT=ON \
   -DSUITESPARSE_ENABLE_PROJECTS="cholmod;cxsparse" \
   -DSUITESPARSE_USE_64BIT_BLAS=ON \
   $AX_CMAKE_CONFIGURE_COMMAND
@@ -410,31 +403,14 @@ $AX_CMAKE \
 cmake_build_install SuiteSparse
 echo "SuiteSparse is installed."
 
-# =================> X4. AMGCL <=================
-$AX_CMAKE \
-  -S "$AX_DEP_ROOT/amgcl" \
-  -B "$BUILD_DIR/amgcl" \
-  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
-  -DBUILD_SHARED_LIBS=ON \
-  $AX_CMAKE_CONFIGURE_COMMAND
-
-cmake_build_install amgcl
-echo "AMGCL is installed."
-
-# # =================> X5. taskflow <=================
+# # =================> X4. AMGCL <=================
 # $AX_CMAKE \
-#   -S "$AX_DEP_ROOT/taskflow" \
-#   -B "$BUILD_DIR/taskflow" \
+#   -S "$AX_DEP_ROOT/amgcl" \
+#   -B "$BUILD_DIR/amgcl" \
 #   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
 #   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
 #   -DBUILD_SHARED_LIBS=ON \
-#   -DTF_BUILD_EXAMPLES=OFF \
-#   -DTF_BUILD_TESTS=OFF \
-#   -DTF_BUILD_BENCHMARKS=OFF \
-#   -DTF_BUILD_PROFILER=OFF \
 #   $AX_CMAKE_CONFIGURE_COMMAND
 #
-# cmake_build_install taskflow
-# echo "taskflow is installed."
-
+# cmake_build_install amgcl
+# echo "AMGCL is installed."
