@@ -387,7 +387,7 @@ $AX_CMAKE \
 cmake_build_install openvdb
 echo "openvdb is installed."
 
-# =================> u3. SuiteSparse <=================
+# =================> X3. SuiteSparse <=================
 $AX_CMAKE \
   -S "$AX_DEP_ROOT/SuiteSparse" \
   -B "$BUILD_DIR/SuiteSparse" \
@@ -403,14 +403,46 @@ $AX_CMAKE \
 cmake_build_install SuiteSparse
 echo "SuiteSparse is installed."
 
-# # =================> X4. AMGCL <=================
-# $AX_CMAKE \
-#   -S "$AX_DEP_ROOT/amgcl" \
-#   -B "$BUILD_DIR/amgcl" \
-#   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-#   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
-#   -DBUILD_SHARED_LIBS=ON \
-#   $AX_CMAKE_CONFIGURE_COMMAND
-#
-# cmake_build_install amgcl
-# echo "AMGCL is installed."
+# =================> X4. AMGCL <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/amgcl" \
+  -B "$BUILD_DIR/amgcl" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DBUILD_SHARED_LIBS=ON \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install amgcl
+echo "AMGCL is installed."
+
+
+# =================> X5. spdlog <=================
+# =================> X5.1 fmt <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/fmt" \
+  -B "$BUILD_DIR/fmt" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DFMT_DOC=OFF \
+  -DFMT_TEST=OFF \
+  -DFMT_INSTALL=ON \
+  -DBUILD_SHARED_LIBS=ON \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/spdlog" \
+  -B "$BUILD_DIR/spdlog" \
+  -DCMAKE_MODULE_PATH="$INSTALL_PREFIX_WITHOUT_LIBNAME/lib/cmake" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DBUILD_SHARED_LIBS=ON \
+  -DSPDLOG_BUILD_SHARED=ON \
+  -DSPDLOG_BUILD_EXAMPLES=OFF \
+  -DSPDLOG_BUILD_TESTS=OFF \
+  -DSPDLOG_BUILD_PIC=ON \
+  -DSPDLOG_FMT_EXTERNAL=ON \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install spdlog
+echo "spdlog is installed."
+
