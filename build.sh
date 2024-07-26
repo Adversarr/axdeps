@@ -96,7 +96,7 @@ cmake_build_install() {
 ###############################################################################
 
 # =================> 1. Eigen <=================
-# NOTE: Will be installed via libigl.
+NOTE: Will be installed via libigl.
 $AX_CMAKE \
  -S "$AX_DEP_ROOT/eigen" \
  -B "$BUILD_DIR/eigen" \
@@ -454,7 +454,7 @@ $AX_CMAKE \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
   -DCXXOPTS_BUILD_EXAMPLES=OFF \
   -DCXXOPTS_BUILD_TESTS=OFF \
-  -DCXXOPTS_ENABLE_INSTALL=OFF \
+  -DCXXOPTS_ENABLE_INSTALL=ON \
   -DCXXOPTS_ENABLE_WARNINGS=OFF
 
 cmake_build_install cxxopts
