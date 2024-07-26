@@ -415,7 +415,6 @@ $AX_CMAKE \
 cmake_build_install amgcl
 echo "AMGCL is installed."
 
-
 # =================> X5. spdlog <=================
 # =================> X5.1 fmt <=================
 $AX_CMAKE \
@@ -426,8 +425,11 @@ $AX_CMAKE \
   -DFMT_DOC=OFF \
   -DFMT_TEST=OFF \
   -DFMT_INSTALL=ON \
-  -DBUILD_SHARED_LIBS=ON \
+  -DBUILD_SHARED_LIBS=OFF \
   $AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install fmt
+echo "fmt is installed."
 
 $AX_CMAKE \
   -S "$AX_DEP_ROOT/spdlog" \
@@ -435,14 +437,26 @@ $AX_CMAKE \
   -DCMAKE_MODULE_PATH="$INSTALL_PREFIX_WITHOUT_LIBNAME/lib/cmake" \
   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
-  -DBUILD_SHARED_LIBS=ON \
-  -DSPDLOG_BUILD_SHARED=ON \
-  -DSPDLOG_BUILD_EXAMPLES=OFF \
+  -DBUILD_SHARED_LIBS=OFF \
+  -DSPDLOG_BUILD_EXAMPLE=OFF \
   -DSPDLOG_BUILD_TESTS=OFF \
-  -DSPDLOG_BUILD_PIC=ON \
   -DSPDLOG_FMT_EXTERNAL=ON \
   $AX_CMAKE_CONFIGURE_COMMAND
 
 cmake_build_install spdlog
 echo "spdlog is installed."
+
+# # =================> X6. cxxopts <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/cxxopts" \
+  -B "$BUILD_DIR/cxxopts" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DCXXOPTS_BUILD_EXAMPLES=OFF \
+  -DCXXOPTS_BUILD_TESTS=OFF \
+  -DCXXOPTS_ENABLE_INSTALL=OFF \
+  -DCXXOPTS_ENABLE_WARNINGS=OFF
+
+cmake_build_install cxxopts
+echo "cxxopts is installed."
 
