@@ -96,7 +96,7 @@ cmake_build_install() {
 ###############################################################################
 
 # =================> 1. Eigen <=================
-NOTE: Will be installed via libigl.
+# NOTE: Will be installed via libigl.
 $AX_CMAKE \
  -S "$AX_DEP_ROOT/eigen" \
  -B "$BUILD_DIR/eigen" \
@@ -215,22 +215,22 @@ cmake_build_install glm
 echo "glm is installed."
 
 # =================> 9. abseil <=================
-$AX_CMAKE \
-  -S "$AX_DEP_ROOT/abseil" \
-  -B "$BUILD_DIR/abseil" \
-  -DBUILD_SHARED_LIBS=ON \
-  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
-  -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-  -DBUILD_TESTING=OFF \
-  -DABSL_BUILD_TESTING=OFF \
-  -DCMAKE_CXX_STANDARD=20 \
-  -DCMAKE_CXX_STANDARD_REQUIRED=ON \
-  $AX_CMAKE_CONFIGURE_COMMAND
-
-cmake_build_install abseil
-echo "abseil is installed."
-
+# $AX_CMAKE \
+#   -S "$AX_DEP_ROOT/abseil" \
+#   -B "$BUILD_DIR/abseil" \
+#   -DBUILD_SHARED_LIBS=ON \
+#   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+#   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+#   -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+#   -DBUILD_TESTING=OFF \
+#   -DABSL_BUILD_TESTING=OFF \
+#   -DCMAKE_CXX_STANDARD=20 \
+#   -DCMAKE_CXX_STANDARD_REQUIRED=ON \
+#   $AX_CMAKE_CONFIGURE_COMMAND
+#
+# cmake_build_install abseil
+# echo "abseil is installed."
+#
 # =================> X. imgui <=================
 # =================> X1. implot <=================
 # =================> X2. imgui-node-editor <=================
@@ -388,6 +388,13 @@ cmake_build_install openvdb
 echo "openvdb is installed."
 
 # =================> X3. SuiteSparse <=================
+# if macos, disable cuda
+if [ "$(uname)" == "Darwin" ]; then
+  export SUITE_SPARSE_ENABLE_CUDA=OFF
+else
+  export SUITE_SPARSE_ENABLE_CUDA=ON
+fi
+
 $AX_CMAKE \
   -S "$AX_DEP_ROOT/SuiteSparse" \
   -B "$BUILD_DIR/SuiteSparse" \
@@ -395,9 +402,9 @@ $AX_CMAKE \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
   -DBUILD_SHARED_LIBS=ON \
   -DBUILD_STATIC_LIBS=ON \
+  -DSUITESPARSE_USE_CUDA=$SUITE_SPARSE_ENABLE_CUDA \
   -DSUITESPARSE_USE_STRICT=ON \
   -DSUITESPARSE_ENABLE_PROJECTS="cholmod;cxsparse" \
-  -DSUITESPARSE_USE_64BIT_BLAS=ON \
   $AX_CMAKE_CONFIGURE_COMMAND
 
 cmake_build_install SuiteSparse
