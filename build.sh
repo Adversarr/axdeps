@@ -96,7 +96,7 @@ cmake_build_install() {
 ###############################################################################
 
 # =================> 1. Eigen <=================
-NOTE: Will be installed via libigl.
+# NOTE: Will be installed via libigl?
 $AX_CMAKE \
  -S "$AX_DEP_ROOT/eigen" \
  -B "$BUILD_DIR/eigen" \
@@ -259,8 +259,6 @@ cp $AX_DEP_ROOT/imgui-node-editor/*.h $AX_DEP_ROOT/imgui_src_build/imnode/includ
 # patch $AX_DEP_ROOT/imgui_src_build/imnode/include/imgui_extra_math.h < $AX_DEP_ROOT/imgui_extra_math.h.patch
 # patch $AX_DEP_ROOT/imgui_src_build/imnode/include/imgui_extra_math.inl < $AX_DEP_ROOT/imgui_extra_math.inl.patch
 patch $AX_DEP_ROOT/imgui_src_build/imnode/src/imgui_canvas.cpp < $AX_DEP_ROOT/imgui_canvas.patch
-
-
 cp $AX_DEP_ROOT/implot/*.h $AX_DEP_ROOT/imgui_src_build/implot/include
 cp $AX_DEP_ROOT/implot/*.cpp $AX_DEP_ROOT/imgui_src_build/implot/src
 
@@ -292,6 +290,7 @@ $AX_CMAKE \
   -B "$BUILD_DIR/glad" \
   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DCMAKE_PREFIX_PATH="$INSTALL_PREFIX_WITHOUT_LIBNAME/lib/cmake" \
   -DGLAD_INSTALL=ON \
   -DBUILD_SHARED_LIBS=ON \
   -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
@@ -321,6 +320,7 @@ $AX_CMAKE \
   -B "$BUILD_DIR/blosc" \
   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DCMAKE_PREFIX_PATH="$INSTALL_PREFIX_WITHOUT_LIBNAME/lib/cmake" \
   -DBUILD_SHARED_LIBS=ON \
   -DTEST_INCLUDE_BENCH_SHUFFLE_1=OFF \
   -DTEST_INCLUDE_BENCH_SHUFFLE_N=OFF \
@@ -339,6 +339,7 @@ $AX_CMAKE \
   -DBUILD_SHARED_LIBS=ON \
   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DCMAKE_PREFIX_PATH="$INSTALL_PREFIX_WITHOUT_LIBNAME/lib/cmake" \
   $AX_CMAKE_CONFIGURE_COMMAND
 
 
@@ -353,6 +354,7 @@ $AX_CMAKE \
   -DBUILD_SHARED_LIBS=ON \
   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DCMAKE_PREFIX_PATH="$INSTALL_PREFIX_WITHOUT_LIBNAME/lib/cmake" \
   -DTBB_TEST=OFF \
   $AX_CMAKE_CONFIGURE_COMMAND
   
@@ -366,6 +368,7 @@ $AX_CMAKE \
   -B "$BUILD_DIR/openvdb" \
   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DCMAKE_PREFIX_PATH="$INSTALL_PREFIX_WITHOUT_LIBNAME/lib/cmake" \
   -DBUILD_SHARED_LIBS=ON \
   -DOPENVDB_BUILD_CORE=ON \
   -DOPENVDB_BUILD_BINARIES=ON \
@@ -389,16 +392,33 @@ echo "openvdb is installed."
 
 # =================> X3. SuiteSparse <=================
 $AX_CMAKE \
+  -S "$AX_DEP_ROOT/OpenBLAS" \
+  -B "$BUILD_DIR/OpenBLAS" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DCMAKE_PREFIX_PATH="$INSTALL_PREFIX_WITHOUT_LIBNAME/lib/cmake" \
+  -DBUILD_SHARED_LIBS=ON \
+  -DBUILD_WITHOUT_LAPACK=OFF \
+  -DBUILD_TESTING=OFF \
+  -DC_LAPACK=ON \
+  -DNO_WARMUP=OFF \
+  $AX_CMAKE_CONFIGURE_COMMAND
+cmake_build_install OpenBLAS
+echo "OpenBLAS is installed."
+
+$AX_CMAKE \
   -S "$AX_DEP_ROOT/SuiteSparse" \
   -B "$BUILD_DIR/SuiteSparse" \
   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DCMAKE_PREFIX_PATH="$INSTALL_PREFIX_WITHOUT_LIBNAME/lib/cmake" \
   -DBUILD_SHARED_LIBS=ON \
   -DBUILD_STATIC_LIBS=ON \
   -DSUITESPARSE_USE_STRICT=ON \
   -DSUITESPARSE_ENABLE_PROJECTS="cholmod;cxsparse" \
-  -DSUITESPARSE_USE_64BIT_BLAS=ON \
+  -DSUITESPARSE_USE_FORTRAN=OFF \
   $AX_CMAKE_CONFIGURE_COMMAND
+  # -DSUITESPARSE_USE_64BIT_BLAS=ON \
 
 cmake_build_install SuiteSparse
 echo "SuiteSparse is installed."
@@ -422,6 +442,7 @@ $AX_CMAKE \
   -B "$BUILD_DIR/fmt" \
   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DCMAKE_PREFIX_PATH="$INSTALL_PREFIX_WITHOUT_LIBNAME/lib/cmake" \
   -DFMT_DOC=OFF \
   -DFMT_TEST=OFF \
   -DFMT_INSTALL=ON \
@@ -455,8 +476,20 @@ $AX_CMAKE \
   -DCXXOPTS_BUILD_EXAMPLES=OFF \
   -DCXXOPTS_BUILD_TESTS=OFF \
   -DCXXOPTS_ENABLE_INSTALL=ON \
-  -DCXXOPTS_ENABLE_WARNINGS=OFF
+  -DCXXOPTS_ENABLE_WARNINGS=OFF \
 
 cmake_build_install cxxopts
 echo "cxxopts is installed."
 
+# =================> X7. GSL <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/GSL" \
+  -B "$BUILD_DIR/GSL" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DGSL_INSTALL=ON \
+  -DGSL_TEST=OFF \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install GSL
+echo "GSL is installed."
