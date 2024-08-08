@@ -504,14 +504,14 @@ echo "GSL is installed."
 
 
 # =================> X8. backward <=================
-$AX_CMAKE \
-  -S "$AX_DEP_ROOT/backward-cpp" \
-  -B "$BUILD_DIR/backward-cpp" \
-  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
-  -DBACKWARD_SHARED=ON \
-  -DBACKWARD_TESTS=OFF \
-  $AX_CMAKE_CONFIGURE_COMMAND
-
-cmake_build_install "backward-cpp"
-echo "backward-cpp is installed."
+# $AX_CMAKE \
+#   -S "$AX_DEP_ROOT/backward-cpp" \
+#   -B "$BUILD_DIR/backward-cpp" \
+#   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+#   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+#   -DBACKWARD_SHARED=ON \
+#   -DBACKWARD_TESTS=OFF \
+#   $AX_CMAKE_CONFIGURE_COMMAND
+#
+# cmake_build_install "backward-cpp"
+# echo "backward-cpp is installed."
