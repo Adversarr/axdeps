@@ -71,3 +71,6 @@
 [submodule "OpenBLAS"]
 	path = OpenBLAS
 	url = https://github.com/OpenMathLib/OpenBLAS.git
+[submodule "GSL"]
+	path = GSL
+	url = https://github.com/microsoft/GSL.git
