@@ -5,7 +5,7 @@ if [ -z "$AX_CMAKE" ]; then
   export AX_CMAKE="cmake"
 fi
 
-if ! command -v $AX_CMAKE &> /dev/null; then
+if ! command -v $AX_CMAKE &>/dev/null; then
   echo "$AX_CMAKE is not available. Please install cmake."
   exit 1
 fi
@@ -54,8 +54,8 @@ echo "Build Directory: $BUILD_DIR"
 read -p "Do you want to continue? (y/n) " -n 1 -r
 # if the input is not 'y' or 'Y' then exit
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    echo "Exiting..."
-    exit 1
+  echo "Exiting..."
+  exit 1
 fi
 
 cmake_build() {
@@ -229,10 +229,10 @@ echo "glm is installed."
 #   -DCMAKE_CXX_STANDARD=20 \
 #   -DCMAKE_CXX_STANDARD_REQUIRED=ON \
 #   $AX_CMAKE_CONFIGURE_COMMAND
-#
+
 # cmake_build_install abseil
 # echo "abseil is installed."
-#
+
 # =================> X. imgui <=================
 # =================> X1. implot <=================
 # =================> X2. imgui-node-editor <=================
@@ -359,7 +359,7 @@ $AX_CMAKE \
   -DCMAKE_PREFIX_PATH="$INSTALL_PREFIX_WITHOUT_LIBNAME" \
   -DTBB_TEST=OFF \
   $AX_CMAKE_CONFIGURE_COMMAND
-  
+
 
 cmake_build_install tbb
 echo "tbb is installed."
@@ -515,3 +515,24 @@ echo "GSL is installed."
 #
 # cmake_build_install "backward-cpp"
 # echo "backward-cpp is installed."
+
+# =================> X9. taskflow <=================
+if [ "$(uname)" == "Darwin" ]; then
+  export ENABLE_CUDA=OFF
+else
+  export ENABLE_CUDA=ON
+fi
+
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/taskflow" \
+  -B "$BUILD_DIR/taskflow" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DTASKFLOW_BUILD_EXAMPLES=OFF \
+  -DTASKFLOW_BUILD_TESTS=OFF \
+  -DTASKFLOW_BUILD_BENCHMARKS=OFF \
+  -DTASKFLOW_BUILD_CUDA=$ENABLE_CUDA \
+  -DCMAKE_CXX_STANDARD=20 \
+  $AX_CMAKE_CONFIGURE_COMMAND
+cmake_build_install taskflow
+echo "taskflow is installed."
