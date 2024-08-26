@@ -503,18 +503,26 @@ cmake_build_install GSL
 echo "GSL is installed."
 
 
-# =================> X8. backward <=================
-# $AX_CMAKE \
-#   -S "$AX_DEP_ROOT/backward-cpp" \
-#   -B "$BUILD_DIR/backward-cpp" \
-#   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-#   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
-#   -DBACKWARD_SHARED=ON \
-#   -DBACKWARD_TESTS=OFF \
-#   $AX_CMAKE_CONFIGURE_COMMAND
-#
-# cmake_build_install "backward-cpp"
-# echo "backward-cpp is installed."
+# =================> X8. benchmark <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/benchmark" \
+  -B "$BUILD_DIR/benchmark" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DBENCHMARK_ENABLE_TESTING=OFF \
+  -DBENCHMARK_ENABLE_EXCEPTIONS=ON \
+  -DBENCHMARK_ENABLE_LTO=OFF \
+  -DBENCHMARK_ENABLE_WERROR=OFF \
+  -DBENCHMARK_FORCE_WERROR=OFF \
+  -DBENCHMARK_ENABLE_INSTALL=ON \
+  -DBENCHMARK_ENABLE_DOXYGEN=OFF \
+  -DBENCHMARK_INSTALL_DOCS=OFF \
+  -DBENCHMARK_ENABLE_GTEST_TESTS=OFF \
+  -DBENCHMARK_USE_BUNDLED_GTEST=ON \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install benchmark
+echo "benchmark is installed."
 
 # =================> X9. taskflow <=================
 if [ "$(uname)" == "Darwin" ]; then
@@ -534,5 +542,7 @@ $AX_CMAKE \
   -DTASKFLOW_BUILD_CUDA=$ENABLE_CUDA \
   -DCMAKE_CXX_STANDARD=20 \
   $AX_CMAKE_CONFIGURE_COMMAND
+
 cmake_build_install taskflow
 echo "taskflow is installed."
+
