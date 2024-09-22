@@ -27,7 +27,7 @@ if ([string]::IsNullOrEmpty($env:AX_CMAKE_CONFIGURE_COMMAND)) {
     $AX_CMAKE_CONFIGURE_COMMAND = $env:AX_CMAKE_CONFIGURE_COMMAND
 }
 $AX_CPU_LOGICAL_PROCESSORS = [System.Environment]::ProcessorCount
-$AX_CMAKE_CONFIGURE_COMMAND += "-DMSVC_MP_THREAD_COUNT=$AX_CPU_LOGICAL_PROCESSORS "
+$AX_CMAKE_CONFIGURE_COMMAND += "-DMSVC_MP_THREAD_COUNT=`"$AX_CPU_LOGICAL_PROCESSORS`" "
 
 # Configure the build environment
 if ([string]::IsNullOrEmpty($env:BUILD_TYPE)) {
@@ -86,7 +86,7 @@ function cmake_build_install {
         [string]$LIB_NAME
     )
 
-    & $AX_CMAKE --build "$($BUILD_DIR)/$LIB_NAME" --config "$BUILD_TYPE" -j 10
+    & $AX_CMAKE --build "$($BUILD_DIR)/$LIB_NAME" --config "$BUILD_TYPE" -j $AX_CPU_LOGICAL_PROCESSORS
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Failed to build $LIB_NAME" -ForegroundColor Red
         exit 1
