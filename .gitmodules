@@ -80,3 +80,6 @@
 [submodule "benchmark"]
 	path = benchmark
 	url = https://github.com/google/benchmark
+[submodule "superlu"]
+	path = superlu
+	url = https://github.com/xiaoyeli/superlu.git
