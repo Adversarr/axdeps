@@ -546,3 +546,18 @@ $AX_CMAKE \
 cmake_build_install taskflow
 echo "taskflow is installed."
 
+# =================> 20. superlu <=================
+$AX_CMAKE \
+  -S "$AX_DEP_ROOT/superlu" \
+  -B "$BUILD_DIR/superlu" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DBUILD_SHARED_LIBS=ON    \
+  -Denable_doc=OFF          \
+  -Denable_tests=OFF        \
+  -Denable_examples=OFF      \
+  -DCMAKE_PREFIX_PATH="$INSTALL_PREFIX_WITHOUT_LIBNAME" \
+  $AX_CMAKE_CONFIGURE_COMMAND
+
+cmake_build_install superlu
+echo "superlu is installed."
