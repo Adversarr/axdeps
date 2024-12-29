@@ -100,14 +100,14 @@ export PKG_CONFIG_PATH=$INSTALL_PREFIX_WITHOUT_LIBNAME/lib/pkgconfig:$PKG_CONFIG
 # =================> 1. Eigen <=================
 # NOTE: Will be installed via libigl?
 $AX_CMAKE \
- -S "$AX_DEP_ROOT/eigen" \
- -B "$BUILD_DIR/eigen" \
- -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
- -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
- -DEIGEN_TEST_OPENMP=ON \
- -DEIGEN_BUILD_DOC=OFF \
- -DEIGEN_BUILD_TESTING=OFF \
- $AX_CMAKE_CONFIGURE_COMMAND
+  -S "$AX_DEP_ROOT/eigen" \
+  -B "$BUILD_DIR/eigen" \
+  -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+  -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
+  -DEIGEN_TEST_OPENMP=ON \
+  -DEIGEN_BUILD_DOC=OFF \
+  -DEIGEN_BUILD_TESTING=OFF \
+  $AX_CMAKE_CONFIGURE_COMMAND
 
 cmake_build_install eigen
 echo "Eigen is installed."
@@ -208,7 +208,7 @@ $AX_CMAKE \
   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
   -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX_WITHOUT_LIBNAME \
   -DGLM_BUILD_LIBRARY=ON \
-  -DGLM_BUILD_TESTS=OFF  \
+  -DGLM_BUILD_TESTS=OFF \
   -DGLM_BUILD_INSTALL=ON \
   -DGLM_ENABLE_CXX_17=ON \
   $AX_CMAKE_CONFIGURE_COMMAND
@@ -260,7 +260,7 @@ cp $AX_DEP_ROOT/imgui-node-editor/*.h $AX_DEP_ROOT/imgui_src_build/imnode/includ
 # diff -u imgui-node-editor/imgui_extra_math.inl imgui_src_build/imnode/include/imgui_extra_math.inl > imgui_extra_math.inl.patch
 # patch $AX_DEP_ROOT/imgui_src_build/imnode/include/imgui_extra_math.h < $AX_DEP_ROOT/imgui_extra_math.h.patch
 # patch $AX_DEP_ROOT/imgui_src_build/imnode/include/imgui_extra_math.inl < $AX_DEP_ROOT/imgui_extra_math.inl.patch
-patch $AX_DEP_ROOT/imgui_src_build/imnode/src/imgui_canvas.cpp < $AX_DEP_ROOT/imgui_canvas.patch
+patch $AX_DEP_ROOT/imgui_src_build/imnode/src/imgui_canvas.cpp <$AX_DEP_ROOT/imgui_canvas.patch
 cp $AX_DEP_ROOT/implot/*.h $AX_DEP_ROOT/imgui_src_build/implot/include
 cp $AX_DEP_ROOT/implot/*.cpp $AX_DEP_ROOT/imgui_src_build/implot/src
 
@@ -344,7 +344,6 @@ $AX_CMAKE \
   -DCMAKE_PREFIX_PATH="$INSTALL_PREFIX_WITHOUT_LIBNAME" \
   $AX_CMAKE_CONFIGURE_COMMAND
 
-
 cmake_build_install zlib
 echo "zlib is installed."
 
@@ -359,7 +358,6 @@ $AX_CMAKE \
   -DCMAKE_PREFIX_PATH="$INSTALL_PREFIX_WITHOUT_LIBNAME" \
   -DTBB_TEST=OFF \
   $AX_CMAKE_CONFIGURE_COMMAND
-
 
 cmake_build_install tbb
 echo "tbb is installed."
@@ -426,7 +424,7 @@ $AX_CMAKE \
   -DSUITESPARSE_ENABLE_PROJECTS="cholmod" \
   -DSUITESPARSE_USE_FORTRAN=OFF \
   $AX_CMAKE_CONFIGURE_COMMAND
-  # -DSUITESPARSE_USE_64BIT_BLAS=ON \
+# -DSUITESPARSE_USE_64BIT_BLAS=ON \
 
 cmake_build_install SuiteSparse
 echo "SuiteSparse is installed."
@@ -470,6 +468,7 @@ $AX_CMAKE \
   -DSPDLOG_BUILD_EXAMPLE=OFF \
   -DSPDLOG_BUILD_TESTS=OFF \
   -DSPDLOG_FMT_EXTERNAL=ON \
+  -Dfmt_ROOT=$INSTALL_PREFIX_WITHOUT_LIBNAME \
   $AX_CMAKE_CONFIGURE_COMMAND
 
 cmake_build_install spdlog
@@ -485,6 +484,7 @@ $AX_CMAKE \
   -DCXXOPTS_BUILD_TESTS=OFF \
   -DCXXOPTS_ENABLE_INSTALL=ON \
   -DCXXOPTS_ENABLE_WARNINGS=OFF \
+  $AX_CMAKE_CONFIGURE_COMMAND
 
 cmake_build_install cxxopts
 echo "cxxopts is installed."
@@ -501,7 +501,6 @@ $AX_CMAKE \
 
 cmake_build_install GSL
 echo "GSL is installed."
-
 
 # =================> X8. benchmark <=================
 $AX_CMAKE \
